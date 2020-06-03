@@ -3,11 +3,14 @@ package bookProject.controller;
 import bookProject.DAO.BookDao;
 import bookProject.DAO.OrderDao;
 import bookProject.DAO.OrderDaoImpl;
+import bookProject.domain.Book;
+import bookProject.domain.OrderDetail;
 import bookProject.model.BookInfo;
 import bookProject.model.OrderDetailInfo;
 import bookProject.model.OrderInfo;
 import bookProject.model.Pagination;
 import bookProject.service.BookService;
+import bookProject.service.BookServiceImpl;
 import bookProject.service.OrderService;
 import bookProject.validator.BookInfoValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -133,9 +137,25 @@ public class AdminController {
         if (orderInfo == null) {
             return "redirect:/orderList";
         }
-        List<OrderDetailInfo> details = this.orderService.listOrderDetailInfos(orderId);
-        orderInfo.setDetails(details);
+        List<OrderDetail> details = this.orderService.listOrderDetailInfos(orderId);
+        //orderInfo.setDetails(details);
         model.addAttribute("orderInfo", orderInfo);
         return "order";
+    }
+
+    @RequestMapping("/editBook")
+    public ModelAndView getEditBook() {
+        List<Book> booksAll = new BookServiceImpl().allBooks();
+        ModelAndView mav = new ModelAndView("allBooksForAdmin");
+        mav.addObject("booksAll",booksAll);
+        return mav;
+    }
+
+    @RequestMapping("/edit")
+    public ModelAndView editBookForm(@RequestParam String code) {
+        ModelAndView mav = new ModelAndView("editBook");
+        Book book = new BookServiceImpl().findBook(code);
+        mav.addObject("book", book);
+        return mav;
     }
 }

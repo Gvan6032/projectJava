@@ -8,7 +8,6 @@ import java.util.Date;
 @Table(name = "books")
 public class Book implements Serializable {
 
-    //private static final long serialVersionUID = -1000119078147252957L;
     private String id;
     private Date createDate;
     private byte[] image;

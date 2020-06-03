@@ -2,10 +2,8 @@ package bookProject.service;
 
 import bookProject.DAO.OrderDao;
 import bookProject.DAO.OrderDaoImpl;
-import bookProject.model.CartInfo;
-import bookProject.model.OrderDetailInfo;
-import bookProject.model.OrderInfo;
-import bookProject.model.Pagination;
+import bookProject.domain.OrderDetail;
+import bookProject.model.*;
 
 import java.util.List;
 
@@ -14,9 +12,9 @@ public class OrderServiceImpl implements OrderService {
     OrderDao orderDao;
 
     @Override
-    public void saveOrder(CartInfo cartInfo) {
+    public void saveOrder(Cart cart) {
         orderDao = new OrderDaoImpl();
-        orderDao.saveOrder(cartInfo);
+        orderDao.saveOrder(cart);
     }
 
     @Override
@@ -32,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDetailInfo> listOrderDetailInfos(String orderId) {
+    public List<OrderDetail> listOrderDetailInfos(String orderId) {
         orderDao = new OrderDaoImpl();
         return orderDao.listOrderDetailInfos(orderId);
     }

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface BookDao {
     public Book findBook(String code);
-    public BookInfo findBookInfo(String code) ;
+    public BookInfo findBookInfo(String code);
     public Pagination<BookInfo> queryBooks(int page,
                                            int maxResult, int maxNavigationPage);
     public Pagination<BookInfo> queryBooks(int page, int maxResult,
@@ -18,4 +18,5 @@ public interface BookDao {
     public void save(BookInfo bookInfo);
     public List<Book> allBooks();
     public List<Book> search(String keyword);
+    public void save(Book book);
 }

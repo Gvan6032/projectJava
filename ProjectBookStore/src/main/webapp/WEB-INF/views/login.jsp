@@ -23,7 +23,6 @@
 <div class="login-container">
     <h3>Enter username and password</h3>
     <br>
-    <!-- /login?error=true -->
     <c:if test="${param.error == 'true'}">
         <div style="color: red; margin: 10px 0px;">
             Login Failed!!!<br /> Reason :
@@ -49,8 +48,10 @@
             </tr>
         </table>
     </form>
-
     <span class="error-message">${error}</span>
+    <form action="/editBook" method="get">
+        <input type="submit" value="Books"></input>
+    </form>
 </div>
 <jsp:include page="footer.jsp"/>
 </body>

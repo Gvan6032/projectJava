@@ -23,15 +23,21 @@ import java.util.List;
 @Transactional
 public class BookDaoImpl implements BookDao {
 
-    private Transaction transaction = null;
+    private Transaction transaction;
+    Book book;
 
     @Override
     public Book findBook(String code) {
-        List<Book> book = new ArrayList<>();
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        Query query = session.createQuery("From * Book t where t.id = code");
-       return (Book) (book = (List<Book>) query.getSingleResult());
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query query = session.createQuery("From Book book where book.id =:code")
+                    .setParameter("code", code);
+             book = (Book) query.getSingleResult();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
+        return book;
     }
 
     @Override
@@ -40,7 +46,8 @@ public class BookDaoImpl implements BookDao {
         if (book == null) {
             return null;
         }
-        return new BookInfo(book);
+        return new BookInfo(book.getId(),book.getNameBook(),
+                book.getAuthor(), book.getDescription(), book.getPriceBook(), book.getCreateDate());
     }
 
     @Override
@@ -106,10 +113,8 @@ public class BookDaoImpl implements BookDao {
     public List<Book> search(String keyword){
         List<Book> searchBook = new ArrayList<>();
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
-            String sql = "FROM Book WHERE nameBook LIKE '%' || :keyword || '%'"
-                    + " OR b.email LIKE '%' || :keyword || '%'"
-                    + " OR b.address LIKE '%' || :keyword || '%'";
-            Query query = session.createQuery(sql);
+            Query query = session.createQuery("From Book book where book.nameBook like concat('%',:keyword,'%')")
+                    .setParameter("keyword",keyword);
             searchBook = (List)query.getResultList();
         }
         catch (Exception e){
@@ -119,4 +124,18 @@ public class BookDaoImpl implements BookDao {
         }
         return searchBook;
     };
+
+    @Override
+    public void save(Book book) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+           // transaction = null;
+            transaction=session.getTransaction();
+            session.save(book);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
+    }
 }

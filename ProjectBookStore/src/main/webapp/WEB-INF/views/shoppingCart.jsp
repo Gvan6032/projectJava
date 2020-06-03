@@ -22,38 +22,33 @@
 <fmt:setLocale value="en_US" scope="session"/>
 
 <div class="page-title">My Cart</div>
-<c:if test="${empty cartForm or empty cartForm.cartLines}">
+<c:if test="${empty cartForm}">
     <h2>There is no items in Cart</h2>
     <a href="${pageContext.request.contextPath}/allBooks">Show
         Book List</a>
 </c:if>
-<c:if test="${not empty cartForm and not empty cartForm.cartLines}">
+<c:if test="${not empty cartForm}">
     <form:form method="POST" modelAttribute="cartForm"
                action="${pageContext.request.contextPath}/shoppingCart">
-        <c:forEach items="${cartForm.cartLines}" var="cartLineInfo"
+        <c:forEach items="${cartForm.cart.bookCode}" var="cartLineInfo"
                    varStatus="varStatus">
             <div class="book-preview-container">
                 <ul>
-                    <li><img class="book-image"
-                             src="${pageContext.request.contextPath}/bookImage?code=${cartLineInfo.bookInfo.code}" />
+                    <li>Code: ${cart.bookCode} <form:hidden path="bookCode"/>
                     </li>
-                    <li>Code: ${cartLineInfo.bookInfo.code} <form:hidden
-                            path="cartLines[${varStatus.index}].bookInfo.code" />
-
-                    </li>
-                    <li>Name: ${cartLineInfo.bookInfo.name}</li>
+                    <li>Name: ${cart.bookName}</li>
                     <li>Price: <span class="price">
-                         <fmt:formatNumber value="${cartLineInfo.bookInfo.price}" type="currency"/>
+                         <fmt:formatNumber value="${cartForm.price}" type="currency"/>
                        </span></li>
                     <li>Quantity: <form:input
-                            path="cartLines[${varStatus.index}].quantity" /></li>
+                            path="quantity" /></li>
                     <li>Subtotal:
                         <span class="subtotal">
-                            <fmt:formatNumber value="${cartLineInfo.amount}" type="currency"/>
+                            <fmt:formatNumber value="${cart.amount}" type="currency"/>
                          </span>
                     </li>
                     <li><a
-                            href="${pageContext.request.contextPath}/shoppingCartRemoveBook{cartLineInfo.bookInfo.code}">
+                            href="${pageContext.request.contextPath}/shoppingCartRemoveBook{cart.codeBook}">
                         Delete </a></li>
                 </ul>
             </div>
@@ -68,6 +63,6 @@
             Buy</a>
     </form:form>
 </c:if>
-<jsp:include page="footer.jsp" />
+<jsp:include page="footer.jsp"/>
 </body>
 </html>

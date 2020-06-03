@@ -6,11 +6,13 @@ import bookProject.util.HibernateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,19 +24,20 @@ import java.util.List;
 @Transactional
 public class UserDaoImpl implements UserDao{
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    private Transaction transaction = null;
+    User user;
 
     @Override
     public User findUser(String userName) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<User> crit = builder.createQuery(User.class);
-        List<Predicate> predicate = new ArrayList<Predicate>();
-        Root<User> user = crit.from(User.class);
-        Predicate condition = builder.like(user.<String>get("userName"),userName);
-        predicate.add(condition);
-        TypedQuery<User> query = session.createQuery(crit);
-        return query.getSingleResult();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query query = session.createQuery("From Book book where book.id like concat('%',:userName,'%')")
+                    .setParameter("userName", userName);
+            user = (User) query.getSingleResult();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
+        return user;
     }
 }

@@ -11,9 +11,8 @@ import java.util.List;
 @Table(name = "users")
 public class User implements Serializable {
 
-    // private static final long serialVersionUID = -2054386655979281969L;
-    public static final String ROLE_MANAGER = "MANAGER";
-    public static final String ROLE_EMPLOYEE = "EMPLOYEE";
+    public static final String ADMIN = "ADMIN";
+    public static final String EMPLOYEE = "EMPLOYEE";
 
     private Integer id;
     private String userName;

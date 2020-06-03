@@ -1,19 +1,20 @@
 package bookProject.util;
 
+import bookProject.model.Cart;
 import bookProject.model.CartInfo;
 
 import javax.servlet.http.HttpServletRequest;
 
 public class Utils {
 
-    public static CartInfo getCartInSession(HttpServletRequest request) {
+    public static Cart getCartInSession(HttpServletRequest request) {
 
-        CartInfo cartInfo = (CartInfo) request.getSession().getAttribute("myCart");
-        if (cartInfo == null) {
-            cartInfo = new CartInfo();
-            request.getSession().setAttribute("myCart", cartInfo);
+        Cart cart = (Cart) request.getSession().getAttribute("myCart");
+        if (cart == null) {
+            cart = new Cart();
+            request.getSession().setAttribute("myCart", cart);
         }
-        return cartInfo;
+        return cart;
     }
 
     public static void removeCartInSession(HttpServletRequest request) {
@@ -24,7 +25,7 @@ public class Utils {
         request.getSession().setAttribute("lastOrderedCart", cartInfo);
     }
 
-    public static CartInfo getLastOrderedCartInSession(HttpServletRequest request) {
-        return (CartInfo) request.getSession().getAttribute("lastOrderedCart");
+    public static Cart getLastOrderedCartInSession(HttpServletRequest request) {
+        return (Cart) request.getSession().getAttribute("lastOrderedCart");
     }
 }

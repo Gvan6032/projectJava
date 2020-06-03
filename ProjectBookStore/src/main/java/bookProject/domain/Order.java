@@ -16,7 +16,7 @@ public class Order implements Serializable {
     private String customerEmail;
     private String customerPhone;
     private Date orderDate;
-    private int orderStatus;
+    private String orderStatus;
 
     public Order(){
 
@@ -86,4 +86,11 @@ public class Order implements Serializable {
         this.customerPhone = customerPhone;
     }
 
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
 }

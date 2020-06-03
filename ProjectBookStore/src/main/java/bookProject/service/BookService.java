@@ -3,7 +3,6 @@ package bookProject.service;
 import bookProject.domain.Book;
 import bookProject.model.BookInfo;
 import bookProject.model.Pagination;
-import org.jboss.logging.Param;
 
 import java.util.List;
 
@@ -17,5 +16,5 @@ public interface BookService {
     public void save(BookInfo bookInfo);
     public List<Book> allBooks();
     public List<Book> search(String keyword);
-
+    public void save(Book book);
 }

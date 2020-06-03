@@ -48,34 +48,29 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public void saveOrder(CartInfo cartInfo) {
+    public void saveOrder(Cart cart) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             int orderNum = this.getMaxOrderNum() + 1;
             order = new Order();
             order.setId(UUID.randomUUID().toString());
             order.setOrderDate(new Date());
-            order.setAmount(cartInfo.getAmountTotal());
-            CustomerInfo customerInfo = cartInfo.getCustomerInfo();
-            order.setCustomerName(customerInfo.getName());
-            order.setCustomerEmail (customerInfo.getEmail());
-            order.setCustomerPhone(customerInfo.getPhone());
-            order.setCustomerAddress(customerInfo.getAddress());
+            order.setAmount(cart.getAmount());
+            order.setCustomerName(cart.getName());
+            order.setCustomerEmail (cart.getEmail());
+            order.setCustomerPhone(cart.getPhone());
+            order.setCustomerAddress(cart.getAddress());
             session.persist(order);
-            List<CartLineInfo> lines = cartInfo.getCartLines();
-            for (CartLineInfo line : lines) {
-                OrderDetail detail = new OrderDetail();
-                detail.setId(UUID.randomUUID().toString());
-                detail.setOrder(order);
-                detail.setAmount(line.getAmount());
-                detail.setPrice(line.getBookInfo().getPriceBook());
-                detail.setQuanity(line.getQuantity());
-                String code = line.getBookInfo().getCode();
-                Book book = this.bookDao.findBook(code);
-                detail.setBook(book);
-                session.persist(detail);
-            }
-            cartInfo.setOrderNum(orderNum);
+            OrderDetail detail = new OrderDetail();
+            detail.setId(cart.getOrderNum());
+            detail.setOrder(order);
+            detail.setAmount(cart.getAmount());
+            detail.setPrice(cart.getBookPrice());
+            detail.setQuantity(Integer.parseInt(cart.getQuantity()));
+            String code = cart.getBookCode();
+            Book book = this.bookDao.findBook(code);
+            detail.setBook(book);
+            session.persist(detail);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -121,15 +116,18 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<OrderDetailInfo> listOrderDetailInfos(String orderId) {
-        String sql = "Select new " + OrderDetailInfo.class.getName() //
-                + "(d.id, d.bookCode, d.bookName , d.quanity,d.price,d.amount) "//
-                + " from " + OrderDetail.class.getName() + " d "//
-                + " where d.order.id = :orderId ";
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Query query = session.createQuery(sql);
-        query.setParameter("orderId", orderId);
-        return ((org.hibernate.query.Query) query).list();
+    public List<OrderDetail> listOrderDetailInfos(String orderId) {
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query query = session.createQuery("From OrderDetail order where order.id =:orderId")
+                    .setParameter("orderId",orderId);
+          orderDetailList = (List<OrderDetail>) query.getSingleResult();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
+        return orderDetailList;
     }
 }
 

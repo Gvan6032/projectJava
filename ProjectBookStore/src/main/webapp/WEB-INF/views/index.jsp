@@ -12,7 +12,7 @@
 <div class="demo-container">
     <h3>Bookshop</h3>
     <ul>
-        <li><a href="/allBooks">Buy online</a></li>
+        <li><a href="/toTheCart">Buy online</a></li>
         <li><a href="/login">Admin pages</a></li>
         <li><a href="/searchBook">Book search</a></li>
     </ul>

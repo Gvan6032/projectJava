@@ -9,7 +9,7 @@ public class OrderDetail implements Serializable {
     private String id;
     private Order order;
     private Book book;
-    private int quanity;
+    private int quantity;
     private double price;
     private double amount;
 
@@ -50,12 +50,12 @@ public class OrderDetail implements Serializable {
     }
 
     @Column(name = "quanity", nullable = false)
-    public int getQuanity() {
-        return quanity;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setQuanity(int quanity) {
-        this.quanity = quanity;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     @Column(name = "price", nullable = false)

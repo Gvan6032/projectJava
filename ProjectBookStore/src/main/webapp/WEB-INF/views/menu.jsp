@@ -10,22 +10,22 @@
 <div class="menu-container">
     <a href="${pageContext.request.contextPath}/">Home</a>
     |
-    <a href="${pageContext.request.contextPath}/bookList">
+    <a href="${pageContext.request.contextPath}/allBooks">
         Book List
     </a>
     |
-    <a href="${pageContext.request.contextPath}/shoppingCart">
+    <a href="${pageContext.request.contextPath}/">
         My Cart
     </a>
     |
-    <security:authorize  access="hasAnyRole('ROLE_MANAGER','ROLE_EMPLOYEE')">
+    <security:authorize  access="hasAnyRole('MANAGER','EMPLOYEE')">
         <a href="${pageContext.request.contextPath}/orderList">
             Order List
         </a>
         |
     </security:authorize>
 
-    <security:authorize  access="hasRole('ROLE_MANAGER')">
+    <security:authorize  access="hasRole('MANAGER')">
         <a href="${pageContext.request.contextPath}/book">
             Create Book
         </a>

@@ -7,17 +7,17 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-   // DbAuthService dbAuthenticationService = new DbAuthService();
-
- //   @Autowired
- //    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
- //       auth.userDetailsService(dbAuthenticationService);
- //   }
+    @Autowired
+     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        UserDetailsService dbAuthenticationService = new DbAuthService();
+        auth.userDetailsService(dbAuthenticationService);
+   }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -27,7 +27,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/book").access("hasRole('ADMIN')");
         http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
         http.authorizeRequests().and().formLogin()//
-                // Submit URL of login page.
                 .loginProcessingUrl("/j_spring_security_check") // Submit URL
                 .loginPage("/login")//
                 .defaultSuccessUrl("/userInfo")//

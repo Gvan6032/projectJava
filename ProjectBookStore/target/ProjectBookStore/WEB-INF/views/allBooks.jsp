@@ -8,6 +8,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
              pageEncoding="ISO-8859-1" %>
 <%@ taglib prefix="s" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -25,8 +26,6 @@
 <th>Description</th>
     <th>Price</th></h>
     <th>Code</th>
-    <th>Code for purcase</th>
-    <th>Quantity</th>
 </tr>
 <s:forEach var="Book" items="${booksAll}">
     <tr>
@@ -35,13 +34,12 @@
         <td>${Book.description}</td>
         <td>${Book.priceBook}</td>
         <td>${Book.id}</td>
-        <td><input name="code" value="${Book.id}"/></td>
-        <td><input type="number" name="quantity"></td>
-        <td><form action="/toTheCart" method="get">
-            <button type="submit" value="Buy"></button>
-        </form> </td>
     </tr>
 </s:forEach>
 </table>
+</form>
+<form action="/toTheCart" method="get">
+    <input type="submit" value="Buy"></input>
+</form>
 </body>
 </html>

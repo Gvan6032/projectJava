@@ -5,11 +5,15 @@ import bookProject.DAO.BookDaoImpl;
 import bookProject.domain.Book;
 import bookProject.model.BookInfo;
 import bookProject.model.Pagination;
+import bookProject.util.HibernateUtil;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.util.List;
 
 public class BookServiceImpl implements BookService {
 
+    private Transaction transaction = null;
     BookDao bookDao = new BookDaoImpl();
 
     @Override
@@ -52,5 +56,11 @@ public class BookServiceImpl implements BookService {
     public List<Book> search(String keyword){
         bookDao = new BookDaoImpl();
         return bookDao.search(keyword);
-    };
+    }
+
+    @Override
+    public void save(Book book) {
+        bookDao = new BookDaoImpl();
+        bookDao.save(book);
+    }
 }

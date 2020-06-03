@@ -57,6 +57,7 @@ create table users (
         customerName varchar(255) not null,
         customerPhone varchar(128) not null,
         orderDate datetime not null,
+		orderStatus varchar(50);
         primary key (ID)
     );
  orderdetails
