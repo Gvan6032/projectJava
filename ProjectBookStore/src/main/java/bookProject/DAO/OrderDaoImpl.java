@@ -55,11 +55,11 @@ public class OrderDaoImpl implements OrderDao {
             order = new Order();
             order.setId(UUID.randomUUID().toString());
             order.setOrderDate(new Date());
-            order.setAmount(cart.getAmount());
-            order.setCustomerName(cart.getName());
-            order.setCustomerEmail (cart.getEmail());
-            order.setCustomerPhone(cart.getPhone());
-            order.setCustomerAddress(cart.getAddress());
+            order.setAmount(20);//cart.getAmount());
+            order.setCustomerName("hh");//cart.getName());
+            order.setCustomerEmail ("anya@tut.by");//cart.getEmail());
+            order.setCustomerPhone("37533445635");//cart.getPhone());
+            order.setCustomerAddress("Minsk");//cart.getAddress());
             session.persist(order);
             OrderDetail detail = new OrderDetail();
             detail.setId(cart.getOrderNum());

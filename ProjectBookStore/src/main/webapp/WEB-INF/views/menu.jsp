@@ -14,18 +14,18 @@
         Book List
     </a>
     |
-    <a href="${pageContext.request.contextPath}/">
+    <a href="${pageContext.request.contextPath}/buyFromCart">
         My Cart
     </a>
     |
-    <security:authorize  access="hasAnyRole('MANAGER','EMPLOYEE')">
+    <security:authorize  access="hasAnyRole('ADMIN','EMPLOYEE')">
         <a href="${pageContext.request.contextPath}/orderList">
             Order List
         </a>
         |
     </security:authorize>
 
-    <security:authorize  access="hasRole('MANAGER')">
+    <security:authorize  access="hasRole('ADMIN')">
         <a href="${pageContext.request.contextPath}/book">
             Create Book
         </a>

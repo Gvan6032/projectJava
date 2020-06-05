@@ -8,7 +8,7 @@
 <body>
 <jsp:include page="header.jsp" />
 <jsp:include page="menu.jsp" />
-<div class="page-title"><a href="/shoppingCart">Shopping Cart</a></div>
+<div class="page-title"><a href="/buyFromCart">Shopping Cart</a></div>
 <div class="demo-container">
     <h3>Bookshop</h3>
     <ul>

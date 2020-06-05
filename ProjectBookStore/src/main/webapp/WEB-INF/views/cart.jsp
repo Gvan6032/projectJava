@@ -18,7 +18,7 @@
 <body>
 <jsp:include page="menu.jsp" />
 <fmt:setLocale value="en_US" scope="session"/>
-<s:if test="${empty myCart}">
+<s:if test="${empty cartList}">
     <h2>There is no items in Cart</h2>
     <a href="${pageContext.request.contextPath}/allBooks">Show
         Book List</a>
@@ -30,7 +30,7 @@
         <th>Book code</th>
         <th>Book title</th>
         <th>Price</th>
-        <th>Quantity</th></h>
+        <th>Quantity</th>
         <th>Order number</th>
         <th>Name of  the customer</th>
         <th>Address</th>

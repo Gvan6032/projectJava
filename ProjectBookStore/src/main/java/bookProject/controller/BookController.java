@@ -256,7 +256,6 @@ public class BookController {
     public String continueBuy(HttpServletRequest req)
     {
         OrderService orderService = new OrderServiceImpl();
-        String code= req.getSession().getId();
         orderService.saveOrder(cart);
         return "order";
     }

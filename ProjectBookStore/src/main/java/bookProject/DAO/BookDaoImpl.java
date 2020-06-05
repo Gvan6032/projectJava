@@ -123,7 +123,7 @@ public class BookDaoImpl implements BookDao {
             }
         }
         return searchBook;
-    };
+    }
 
     @Override
     public void save(Book book) {
