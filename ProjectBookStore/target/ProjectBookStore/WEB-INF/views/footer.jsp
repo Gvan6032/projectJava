@@ -9,5 +9,5 @@
 <div class="footer-container">
     <br>
     <a>@Right Anya T.</a>
-    Contact infomation: +375336553319
+    Contact infomation: +3753366XXXXX
 </div>

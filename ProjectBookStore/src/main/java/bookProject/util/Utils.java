@@ -1,8 +1,6 @@
 package bookProject.util;
 
 import bookProject.model.Cart;
-import bookProject.model.CartInfo;
-
 import javax.servlet.http.HttpServletRequest;
 
 public class Utils {
@@ -21,7 +19,7 @@ public class Utils {
         request.getSession().removeAttribute("myCart");
     }
 
-    public static void storeLastOrderedCartInSession(HttpServletRequest request, CartInfo cartInfo) {
+    public static void storeLastOrderedCartInSession(HttpServletRequest request, Cart cartInfo) {
         request.getSession().setAttribute("lastOrderedCart", cartInfo);
     }
 

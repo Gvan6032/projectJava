@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@Transactional
+//@Transactional
 public class OrderDaoImpl implements OrderDao {
 
     @Autowired
@@ -49,8 +49,8 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public void saveOrder(Cart cart) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+        try (Session session = HibernateUtil.getSessionFactory().getCurrentSession()) {
+            //transaction = session.beginTransaction();
             int orderNum = this.getMaxOrderNum() + 1;
             order = new Order();
             order.setId(UUID.randomUUID().toString());
@@ -71,7 +71,7 @@ public class OrderDaoImpl implements OrderDao {
             Book book = this.bookDao.findBook(code);
             detail.setBook(book);
             session.persist(detail);
-            transaction.commit();
+            //transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();

@@ -21,7 +21,7 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional
+//@Transactional
 public class UserDaoImpl implements UserDao{
 
     private Transaction transaction = null;

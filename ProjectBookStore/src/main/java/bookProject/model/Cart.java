@@ -127,6 +127,10 @@ public class Cart {
         return this.orderNum.isEmpty();
     }
 
+    public boolean isValidCustomer() {
+        return this.getName() != null && this.getName().isEmpty();
+    }
+
     /*public void addCart(Cart cart, String quantity,String code) {
         Cart line = this.bookCode;
 

@@ -1,4 +1,4 @@
-package bookProject.controller;
+ package bookProject.controller;
 
 import bookProject.DAO.BookDao;
 import bookProject.DAO.OrderDao;
@@ -44,12 +44,11 @@ import java.util.*;
 @EnableWebMvc
 public class BookController {
 
-    private OrderService orderService;
-    private BookService bookService;
+    //private OrderService orderService;
+    //private BookService bookService;
     private CustomerInfoValidator customerInfoValidator;
     Book book;
     Cart cart;
-    private List<CustomerInfo> customerInfoList = new ArrayList<>();
     private List<Cart> cartList = new ArrayList<>();
 
     @InitBinder
@@ -84,7 +83,7 @@ public class BookController {
         final int maxResult = 5;
         final int maxNavigationPage = 10;
         likeName = "";
-        Pagination<BookInfo> result = bookService.queryBooks(page, //
+        Pagination<Cart> result = new BookServiceImpl().queryBooks(page, //
                 maxResult, maxNavigationPage, likeName);
         model.addAttribute("paginationBooks", result);
         return "bookList";
@@ -111,80 +110,28 @@ public class BookController {
         return "redirect:/shoppingCart";
     }*/
 
-    /*@RequestMapping(value = { "/shoppingCart" }, method = RequestMethod.POST)
-    public String shoppingCartUpdateQty(HttpServletRequest request,
-                                        Model model,
-                                        @ModelAttribute("cartForm") Cart cartForm) {
-        Cart cart = Utils.getCartInSession(request);
-        return "redirect:/shoppingCart";
-    }
-
-    @RequestMapping(value = { "/shoppingCart" }, method = RequestMethod.GET)
-    public String shoppingCartHandler(HttpServletRequest request, Model model) {
-        Cart myCart = Utils.getCartInSession(request);
-        model.addAttribute("cartForm", myCart);
-        return "shoppingCart";
-    }
-
-    /*@RequestMapping(value = { "/shoppingCartCustomer" }, method = RequestMethod.GET)
-    public String shoppingCartCustomerForm(HttpServletRequest request, Model model) {
-        Cart cart = Utils.getCartInSession(request);
-        if (cart.isEmpty()) {
-            return "redirect:/shoppingCart";
-        }
-        model.addAttribute("customerForm", cart);
-        return "shoppingCartCustomer";
-    }
-
-    /*@RequestMapping(value = { "/shoppingCartCustomer" }, method = RequestMethod.POST)
-    public String shoppingCartCustomerSave(HttpServletRequest request,
-                                           Model model,
-                                           @ModelAttribute("customerForm") @Validated Cart customerForm,
-                                           BindingResult result,
-                                           final RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
-          return "shoppingCartCustomer";
-        }
-        Cart cart = Utils.getCartInSession(request);
-        cart.setBookCode();
-        return "redirect:/shoppingCartConfirmation";
-    }
-
-    @RequestMapping(value = { "/shoppingCartConfirmation" }, method = RequestMethod.GET)
+   /* @RequestMapping(value = { "/shoppingCartConfirmation" }, method = RequestMethod.GET)
     public String shoppingCartConfirmationReview(HttpServletRequest request, Model model) {
-        CartInfo cartInfo = Utils.getCartInSession(request);
-        //if (cartInfo.isEmpty()) {
-           // return "redirect:/shoppingCart";
-       // } else if (!cartInfo.isValidCustomer()) {
-          //  return "redirect:/shoppingCartCustomer";
-       // }
-        return "shoppingCartConfirmation";
-    }
+        Cart cart = Utils.getCartInSession(request);
 
-    @RequestMapping(value = { "/shoppingCartConfirmation" }, method = RequestMethod.POST)
-    @Transactional(propagation = Propagation.NEVER)
-    public String shoppingCartConfirmationSave(HttpServletRequest request, Model model) {
-        CartInfo cartInfo = Utils.getCartInSession(request);
-        if (cartInfo.isEmpty()) {
-            return "redirect:/shoppingCart";
-        } else if (!cartInfo.isValidCustomer()) {
-            return "redirect:/shoppingCartCustomer";
-        }
-        try {
-            orderService.saveOrder(cartInfo);
-        } catch (Exception e) {
-            return "shoppingCartConfirmation";
-        }
-        Utils.removeCartInSession(request);
-        Utils.storeLastOrderedCartInSession(request, cartInfo);
-        return "redirect:/shoppingCartFinalize";
+    }*/
+
+    @RequestMapping(value = { "/shoppingCartConfirmation" },method = RequestMethod.GET)
+    public String shoppingCartConfirmationSave(HttpServletRequest req,
+                                               Model model,
+                                               @ModelAttribute("customerForm") @Validated Cart cart,
+                                               BindingResult result,
+                                               final RedirectAttributes redirectAttributes) {
+
+        req.setAttribute("customerForm",cart);
+        return "editCartCustomer";
     }
 
     @RequestMapping(value = { "/shoppingCartFinalize" }, method = RequestMethod.GET)
     public String shoppingCartFinalize(HttpServletRequest request, Model model) {
-        CartInfo lastOrderedCart = Utils.getLastOrderedCartInSession(request);
+        Cart lastOrderedCart = Utils.getLastOrderedCartInSession(request);
         if (lastOrderedCart == null) {
-            return "redirect:/shoppingCart";
+            return "redirect:/cartForBuy";
         }
         return "shoppingCartFinalize";
     }
@@ -194,14 +141,14 @@ public class BookController {
                              @RequestParam("code") String code) throws IOException {
         Book book = null;
         if (code != null) {
-            book = (Book) this.bookService.findBook(code);
+            book = new BookServiceImpl().findBook(code);
         }
         if (book != null && book.getImage() != null) {
             response.setContentType("image/jpeg, image/jpg, image/png, image/gif");
             response.getOutputStream().write(book.getImage());
         }
         response.getOutputStream().close();
-    }*/
+    }
 
     @RequestMapping(value = {"/toTheCart"}, method = RequestMethod.GET)
     public String toTheCart(HttpServletRequest request,Map<String,Object> model){
@@ -220,11 +167,11 @@ public class BookController {
                                  BindingResult result,
                                  final RedirectAttributes redirectAttributes){
          if(result.hasErrors()) {
-             return "shoppingCart";
+             return "cart";
          }
          if (req.getParameter("codeBook").equals("Select")||req.getParameter("quantity").equals("0")||
                  (req.getParameter("codeBook").equals("Select")&& req.getParameter("quantity").equals("0"))){
-             return "shoppingCart";
+             return "cart";
          }
          String sessionId =  req.getSession().getId();
          cart.setOrderNum(sessionId);
@@ -237,6 +184,7 @@ public class BookController {
          cart.setAmount(amount);
          cart.setStatus("Not paid");
          cartList.add(cart);
+         cart = Utils.getCartInSession(req);
          return "addCart";
     }
 
@@ -253,6 +201,7 @@ public class BookController {
     }
 
     @RequestMapping(value = {"/continueBuy"},method = RequestMethod.GET)
+    @Transactional(propagation = Propagation.NEVER)
     public String continueBuy(HttpServletRequest req)
     {
         OrderService orderService = new OrderServiceImpl();
@@ -283,17 +232,10 @@ public class BookController {
         return "searchResult";
     }
 
-    @RequestMapping("/new")
-    public String newCustomerForm(Map<String, Object> model) {
-        Book book = new Book();
-        model.put("book", book);
-        return "newBook";
-    }
-
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String saveCustomer(HttpServletRequest req,@ModelAttribute("book") Book book) throws ParseException {
         new BookServiceImpl().save(book);
-        return "allBooks";
+         return "allBooks";
     }
 }
 

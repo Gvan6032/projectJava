@@ -5,7 +5,7 @@ import bookProject.DAO.OrderDao;
 import bookProject.DAO.OrderDaoImpl;
 import bookProject.domain.Book;
 import bookProject.domain.OrderDetail;
-import bookProject.model.BookInfo;
+import bookProject.model.Cart;
 import bookProject.model.OrderDetailInfo;
 import bookProject.model.OrderInfo;
 import bookProject.model.Pagination;
@@ -32,22 +32,16 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Transactional
 @EnableWebMvc
 public class AdminController {
 
-    //@Autowired
     private OrderService orderService;
-
-    //@Autowired
     private BookService bookService;
-
-    //@Autowired
     private BookInfoValidator bookInfoValidator;
-
-    //  @Autowired
     private ResourceBundleMessageSource messageSource;
 
     @InitBinder
@@ -57,7 +51,7 @@ public class AdminController {
             return;
         }
         System.out.println("Target=" + target);
-        if (target.getClass() == BookInfo.class) {
+        if (target.getClass() == Cart.class) {
             dataBinder.setValidator(bookInfoValidator);
             dataBinder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
         }
@@ -94,9 +88,9 @@ public class AdminController {
         return "orderList";
     }
 
-    @RequestMapping(value = { "/book" }, method = RequestMethod.GET)
+    /*@RequestMapping(value = { "/book" }, method = RequestMethod.GET)
     public String product(Model model, @RequestParam(value = "code", defaultValue = "") String code) {
-        BookInfo bookInfo = null;
+        Cart cart = null;
         if (code != null && code.length() > 0) {
             bookInfo = bookService.findBookInfo(code);
         }
@@ -126,7 +120,7 @@ public class AdminController {
             return "book";
         }
         return "redirect:/bookList";
-    }
+    }*/
 
     @RequestMapping(value = { "/order" }, method = RequestMethod.GET)
     public String orderView(Model model, @RequestParam("orderId") String orderId) {
@@ -151,11 +145,99 @@ public class AdminController {
         return mav;
     }
 
-    @RequestMapping("/edit")
-    public ModelAndView editBookForm(@RequestParam String code) {
+    @GetMapping("/edit")
+    @ResponseBody
+    public ModelAndView editBookForm(@RequestParam String id) {
         ModelAndView mav = new ModelAndView("editBook");
-        Book book = new BookServiceImpl().findBook(code);
+        Book book = new BookServiceImpl().findBook(id);
+        new BookServiceImpl().save(book);
         mav.addObject("book", book);
         return mav;
+    }
+
+    @RequestMapping("/delete")
+    public ModelAndView deleteCustomerForm(@RequestParam String id) {
+        ModelAndView mav = new ModelAndView("allBooksForAdmin");
+        Book book = new BookServiceImpl().findBook(id);
+        new BookServiceImpl().delete(book);
+        return mav;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @RequestMapping("/new")
+    public String newCustomerForm(Map<String, Object> model) {
+        Book book = new Book();
+        model.put("book", book);
+        return "newBook";
     }
 }

@@ -21,33 +21,33 @@
     <form action="save" method="post" modelAttribute="book">
         <table border="0" cellpadding="5">
             <tr>
-                <td>ID: </td>
-                <td>${book.id}
-                    <form:hidden path="id"/>
-                </td>
-            <tr>
                 <td>Code: </td>
-                <td><input path="id" /></td>
+                <td>${book.id}</td>
             </tr>
             <tr>
                 <td>Date: </td>
-                <td><input path="createDate" /></td>
+                <td>${book.createDate}</td>
+                <td>New value: <input path="createDate" /></td>
             </tr>
             <tr>
                 <td>Name: </td>
-                <td><input path="nameBook" /></td>
+                <td>${book.nameBook}</td>
+                <td>New value: <input path="nameBook" /></td>
             </tr>
             <tr>
                 <td>Author: </td>
-                <td><input path="author" /></td>
+                <td>${book.author}</td>
+                <td>New value: <input path="author" /></td>
             </tr>
             <tr>
                 <td>Description: </td>
-                <td><input path="description" /></td>
+                <td>${book.description}</td>
+                <td>New value: <input path="description" /></td>
             </tr>
             <tr>
                 <td>Price: </td>
-                <td><input path="priceBook" /></td>
+                <td>${book.priceBook}</td>
+                <td>New value: <input path="priceBook" /></td>
             </tr>
             <tr>
                 <td colspan="2"><input type="submit" value="Save"></td>

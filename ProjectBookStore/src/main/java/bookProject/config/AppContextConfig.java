@@ -28,7 +28,6 @@ public class AppContextConfig {
     @Configuration
     @ComponentScan("bookProject.*")
     @EnableTransactionManagement
-    @PropertySource("classpath:sql.properties")
     public class ApplicationContextConfig {
 
         @Autowired
@@ -37,7 +36,6 @@ public class AppContextConfig {
         @Bean
         public ResourceBundleMessageSource messageSource() {
             ResourceBundleMessageSource rb = new ResourceBundleMessageSource();
-            // Load property in message/validator.properties
             rb.setBasenames(new String[]{"messages/validator"});
             return rb;
         }

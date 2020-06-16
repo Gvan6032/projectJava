@@ -1,21 +1,13 @@
 package bookProject.DAO;
 
 import bookProject.domain.Book;
-import bookProject.model.BookInfo;
+import bookProject.model.Cart;
 import bookProject.model.Pagination;
 import bookProject.util.HibernateUtil;
 import org.hibernate.*;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +15,7 @@ import java.util.List;
 @Transactional
 public class BookDaoImpl implements BookDao {
 
-    private Transaction transaction;
+    Transaction transaction;
     Book book;
 
     @Override
@@ -41,25 +33,15 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public BookInfo findBookInfo(String code) {
-        Book book = this.findBook(code);
-        if (book == null) {
-            return null;
-        }
-        return new BookInfo(book.getId(),book.getNameBook(),
-                book.getAuthor(), book.getDescription(), book.getPriceBook(), book.getCreateDate());
-    }
-
-    @Override
-    public Pagination<BookInfo> queryBooks(int page, int maxResult, int maxNavigationPage) {
+    public Pagination<Cart> queryBooks(int page, int maxResult, int maxNavigationPage) {
         return queryBooks(page, maxResult, maxNavigationPage, null);
     }
 
     @Override
-    public Pagination<BookInfo> queryBooks(int page, int maxResult, int maxNavigationPage, String likeName) {
+    public Pagination<Cart> queryBooks(int page, int maxResult, int maxNavigationPage, String likeName) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        String sql = "Select new " + BookInfo.class.getName() //
-                + "(p.code, p.nameBook, p.author,p.description, p.priceBook) " + " from "//
+        String sql = "Select new " + Cart.class.getName()
+                + "(p.code, p.nameBook, p.author,p.description, p.priceBook) " + " from "
                 + Book.class.getName() + " p ";
         if (likeName != null && likeName.length() > 0) {
             sql += " Where lower(p.name) like :likeName ";
@@ -69,12 +51,12 @@ public class BookDaoImpl implements BookDao {
             if (likeName != null && likeName.length() > 0) {
                 query.setParameter("likeName", "%" + likeName.toLowerCase() + "%");
             }
-        return new Pagination<BookInfo>((org.hibernate.query.Query) query, page, maxResult, maxNavigationPage);
+        return new Pagination<Cart>((org.hibernate.query.Query) query, page, maxResult, maxNavigationPage);
     }
 
     @Override
-    public void save(BookInfo bookInfo) {
-        String code = bookInfo.getCode();
+    public void save(Cart cart) {
+        String code = cart.getBookCode();
         Book book = null;
         boolean isNew = false;
         if (code != null) {
@@ -86,8 +68,8 @@ public class BookDaoImpl implements BookDao {
             book.setCreateDate(new Date());
         }
         book.setId(code);
-        book.setNameBook(bookInfo.getNameBook());
-        book.setPriceBook(bookInfo.getPriceBook());
+        book.setNameBook(cart.getBookCode());
+        book.setPriceBook(cart.getBookPrice());
         if (isNew) {
             Session session = HibernateUtil.getSessionFactory().openSession();
             session.persist(book);
@@ -128,8 +110,7 @@ public class BookDaoImpl implements BookDao {
     @Override
     public void save(Book book) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-           // transaction = null;
-            transaction=session.getTransaction();
+            transaction=session.beginTransaction();
             session.save(book);
             transaction.commit();
         } catch (Exception e) {
@@ -138,4 +119,18 @@ public class BookDaoImpl implements BookDao {
             }
         }
     }
+
+    @Override
+    public void delete(Book book) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction=session.beginTransaction();
+            session.delete(book);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
+    }
+
 }

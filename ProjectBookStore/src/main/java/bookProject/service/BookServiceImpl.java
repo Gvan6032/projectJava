@@ -3,18 +3,21 @@ package bookProject.service;
 import bookProject.DAO.BookDao;
 import bookProject.DAO.BookDaoImpl;
 import bookProject.domain.Book;
-import bookProject.model.BookInfo;
+import bookProject.model.Cart;
 import bookProject.model.Pagination;
 import bookProject.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 public class BookServiceImpl implements BookService {
 
     private Transaction transaction = null;
-    BookDao bookDao = new BookDaoImpl();
+    @Autowired
+    BookDao bookDao;
 
     @Override
     public Book findBook(String code) {
@@ -23,27 +26,21 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookInfo findBookInfo(String code) {
-        bookDao = new BookDaoImpl();
-        return bookDao.findBookInfo(code);
-    }
-
-    @Override
-    public Pagination<BookInfo> queryBooks(int page, int maxResult, int maxNavigationPage) {
+    public Pagination<Cart> queryBooks(int page, int maxResult, int maxNavigationPage) {
         bookDao = new BookDaoImpl();
         return bookDao.queryBooks(page,maxResult,maxNavigationPage);
     }
 
     @Override
-    public Pagination<BookInfo> queryBooks(int page, int maxResult, int maxNavigationPage, String likeName) {
+    public Pagination<Cart> queryBooks(int page, int maxResult, int maxNavigationPage, String likeName) {
         bookDao = new BookDaoImpl();
         return bookDao.queryBooks(page,maxResult,maxNavigationPage,likeName);
     }
 
     @Override
-    public void save(BookInfo bookInfo) {
+    public void save(Cart cart) {
         bookDao = new BookDaoImpl();
-        bookDao.save(bookInfo);
+        bookDao.save(cart);
     }
 
     @Override
@@ -62,5 +59,11 @@ public class BookServiceImpl implements BookService {
     public void save(Book book) {
         bookDao = new BookDaoImpl();
         bookDao.save(book);
+    }
+
+    @Override
+    public void delete(Book book) {
+        bookDao = new BookDaoImpl();
+        bookDao.delete(book);
     }
 }

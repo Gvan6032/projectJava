@@ -18,7 +18,7 @@
 <body>
 <jsp:include page="menu.jsp" />
 <fmt:setLocale value="en_US" scope="session"/>
-<s:if test="${empty cartList}">
+<s:if test="${cartList.size() == 0}">
     <h2>There is no items in Cart</h2>
     <a href="${pageContext.request.contextPath}/allBooks">Show
         Book List</a>
@@ -56,7 +56,7 @@
     </s:forEach>
 </table>
     <a class="navi-item"
-       href="${pageContext.request.contextPath}/shoppingCartCustomer">Enter
+       href="${pageContext.request.contextPath}/shoppingCartConfirmation">Enter
         Customer Info</a>
     <a class="navi-item"
        href="${pageContext.request.contextPath}/continueBuy">Continue
